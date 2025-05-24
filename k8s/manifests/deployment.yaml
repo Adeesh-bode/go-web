@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-web-app
+  labels:
+    app: go-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-web-app
+  template: 
+    metadata:
+      labels:
+        app: go-web-app
+    spec:
+      containers:
+      - name: go-web-app
+        image: genesisa/go-web-app:v1  # <username>/imagename
+        ports:
+        - containerPort: 8080
+
+
+
+## Pod(group of 1 or more containers) :
+#Containers need a standard unit to be scheduled and managed. 
+#Kubernetes groups containers that tightly work together into a pod.
+# Containers in the same pod run on the same node and can communicate via localhost.
+# these containers share Network IP(internal Ip address) ,  volumes(optional), context and configtns
+
+
+
+# 
