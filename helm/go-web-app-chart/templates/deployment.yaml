@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment # manages deploying pods and scaling them
+metadata:
+  name: go-web-app   # Name of the Deployment object
+  labels:
+    app: go-web-app  # Label for the Deployment itself (optional but helpful)
+spec:
+  replicas: 1 # Number of pod replicas to run (scaling factor)
+  
+  selector:
+    matchLabels:
+      app: go-web-app # selectors finds pods with label given here // must match
+  
+  template:  # describe the creation of pod
+    metadata:
+      labels:
+        app: go-web-app # label for the pod // must match the selector
+    spec:
+      containers:
+      - name: go-web-app
+        image: genesisa/go-web-app:{{ .Values.image.tag }}  # <username>/imagename # our docker image
+        ports:
+        - containerPort: 8080
+
+
+# k8s - container orchestration ( to arrange.plan.cordinate ) platform
+
+## Pod(group of 1 or more containers) :
+#Containers need a standard unit to be scheduled and managed. 
+#Kubernetes groups containers that tightly work together into a pod.
+# Containers in the same pod run on the same node and can communicate via localhost.
+# these containers share Network IP(internal Ip address) ,  volumes(optional), context and configtns
+
+
+
+## node ( worker machine where pods run)
+# Each node runs a container runtime (like Docker or containerd), Kubelet (agent), and networking.
+
+
+# cluster
+# k8s cluster consists of multiple nodes.
+# A cluster has one or more master/control plane nodes that manage the cluster state and nodes.
+# The master decides where pods run, monitors health, manages scaling, updates, etc.
+
+
+
+####### Flow
+# You define your app in YAML manifests (like Deployment, Service).
+# kubectl sends these manifests to the API server (control plane).
+# The control plane schedules pods on nodes, based on resource availability.
+# Pods run containers, which run your app.
+# If pods die, Deployment recreates them.
+# Services route traffic to healthy pods.
+# Kubernetes monitors health, scales pods, updates apps with zero downtime.
+
+
