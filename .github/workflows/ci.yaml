@@ -26,7 +26,7 @@ jobs:
       run: go build -o go-web-app
     
     - name: Test
-      run: go test ./..
+      run: go test ./...
   
   code-quality: # stage 2 - linting
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     - name: Run golangci-lint
-      uses: actions/golangci-lint-action@v6
+      uses: golangci/golangci-lint-action@v6
       with:
         version: v1.56.2
       
@@ -71,7 +71,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       with: 
-        token: ${{ secrets.TOKEN }}
+        token: ${{ secrets.TOKEN }} # github token as after tag change push required
     - name: Update tag in Helm chart
       run:  |
         sed -i 's/tag: .*/tag: "${{ github.run_id}}"/' helm/go-web-app-chart/values.yaml
