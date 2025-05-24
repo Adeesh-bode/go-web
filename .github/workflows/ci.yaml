@@ -1,0 +1,85 @@
+name: CI
+
+on: 
+  push: # when action is push
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'helm/**' # as CD part will already we monitoring changes on helm file // in our project argoCd monitors
+
+# our ci will be multistages - build&unittest, staticcodeanalysis, create&pushnewdockerimage , helmchangesforversioning&CDtriggers
+
+jobs:
+  build: # stage 1
+    runs-on: ubuntu-latest # tells where to run this on
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.22
+    
+    - name: Build
+      run: go build -o go-web-app
+    
+    - name: Test
+      run: go test ./..
+  
+  code-quality: # stage 2 - linting
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: action/checkout@v4
+    - name: Run golangci-lint
+      uses: action/golangci-lint-action@v6
+      with:
+        version: v1.56.2
+      
+  
+  push: # stage 3 -push docker image
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: action/checkout@v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and Push action
+      uses: docker/build-push-action@v6
+      with:
+      context: .
+      file: ./Dockerfile
+      push: true
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/go-web-app:${{ github.run_id}} ## .;. as commit is unique the generated run_id will also be unique
+
+  update-newtag-helm-chart:
+    runs-on: ubuntu-latest
+    needs: push # to execute this stage only after stage -3 i.e push
+
+    steps:
+    - name: Checkout repository
+      uses: action/checkout@v4
+      with: 
+        token: ${{ secrets.TOKEN }}
+    - name: Update tag in Helm chart
+      run:  |
+        sed -i 's/tag: .*/tag: "${{ github.run_id}}"/' helm/go-web-app-chart/values.yaml
+    - name: Commit and push changes
+      run: |
+        git config --global user.email "bodead@rknec.edu"
+        git config --global user.name "Adeesh-bode"
+        git add helm/go-web-app-chart/values.yaml
+        git commit -m "Update tag in helm chart"
+        git push
+

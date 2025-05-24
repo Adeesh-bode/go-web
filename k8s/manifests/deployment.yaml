@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: go-web-app
-        image: genesisa/go-web-app:v1  # <username>/imagename
+        image: genesisa/go-web-app:v1  # <username>/imagename # our docker image
         ports:
         - containerPort: 8080
 
