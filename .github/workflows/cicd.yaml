@@ -84,6 +84,6 @@ jobs:
         git config --global user.email "bodead@rknec.edu"
         git config --global user.name "Adeesh-bode"
         git add helm/go-web-app-chart/values.yaml
-        git commit -m "Update tag in helm chart"
+        git commit -m "auto by helm #cd:Update tag in helm chart"
         git push
 
