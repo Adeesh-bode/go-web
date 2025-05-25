@@ -59,3 +59,37 @@ check: kubectl get ing
 
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml
+
+
+## argocd
+
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# expose argo cd service so that // Access the Argo CD UI (Loadbalancer service)
+
+kubectl patch svc argocd-server -n argocd -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'
+
+
+# Get the Loadbalancer service IP
+kubectl get svc argocd-server -n argocd
+
+# hit the <nodeip>:<portfromabovecommands> to open argocd ui
+
+## username : admin
+
+## to  get password
+
+kubectl get secrets -n argocd
+
+# than
+
+kubectl edit secret argocd-initial-admin-secret -n argocd
+
+// copy password from here which is bydefault base 64 encode will have to decode it
+
+## decode
+
+echo VEF4NVJ0TFBZRm85ZWVCVg== | base64 --decode
+
+for powershell:[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("VEF4NVJ0TFBZRm85ZWVCVg=="))
