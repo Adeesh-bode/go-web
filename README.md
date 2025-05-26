@@ -53,7 +53,7 @@ check: kubectl get ing
 
 ### now can observe address is empty - cant access resouce directly using ingress as address not assigned
 
-## we need ingress control which will assign address for the ingress resource
+## we need ingress controller which will assign address for the ingress resource
 
 ## once the address is assigned , will take the ip address and map with the domain name  that we have created in ETC Host
 
@@ -109,6 +109,18 @@ helm install go-web-app ./helm/go-web-app-chart
 
 # now apply ingress aws controller
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/aws/deploy.yaml
+
+### helm setup 
+the benefit of ur helm is that u can variabalize ur .yaml file , so that u can setup multiple deployment environement with 1 single file
+
+cd helm
+helm create <urprojectnamehere>-charts
+
+boilerplate structure
+just keep chart.yaml (metadata of helm here) , values.yaml, template ( put variablalized k8s manifests here)
+
+helm install <nameofhelmproject> <foldernamewith”-chart”Asconfigfordeployment>
+
 
 
 # argo cd setup

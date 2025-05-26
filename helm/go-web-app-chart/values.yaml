@@ -10,7 +10,7 @@ image:
   repository: adeshbode/go-web-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  # tag: "15241880974"
+  # argocd will edit the below and these values are used in yaml file, they will also experince change in value
   tag: "15241880974"
 
 

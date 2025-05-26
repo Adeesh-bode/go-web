@@ -42,7 +42,10 @@ CMD ["./main"]
 
 
 
-###################
+################### Test the docker file and success of containerrzatn locally
 # docker build  -t adeshbode/go-web-app .
 # docker run -p 8080:8080 -it adeshbode/go-web-app 
 # mapping contaier port 8080 to host port 8080 in this case our our laptop can be ec2 or ecs on cloud
+
+### upload  image to docker hub
+# docker push adeshbode/go-web-app:v1
